@@ -70,20 +70,21 @@ class Assignment1Spec extends FlatSpec with TableDrivenPropertyChecks {
         path,
         _ == s"$file.txt",
         is => {
-          val g = Graph.undirectedBuilder[Int, UndirectedWeightedEdge[Int]]()
-          Source.fromInputStream(is)
+          val graph = Source.fromInputStream(is)
             .getLines
             .filterNot(_.isEmpty)
-            .foreach(line => line
-              .split("\\s+")
-              .map(_.trim) match {
-              case Array(n, m) => println(s"|V| = $n, |E| = $m")
-              case Array(v, w, weight) => g.addEdge(UndirectedWeightedEdge(v.toInt, w.toInt, weight.toInt))
-              case bad => throw new IllegalArgumentException(s"""Unexpected line: ${bad.deep.mkString(" ")}""")
-            })
+            .foldLeft(Graph.undirected[Int, UndirectedWeightedEdge[Int]]) { (g, line) =>
+              line
+                .split("\\s+")
+                .map(_.trim) match {
+                case Array(n, m) => println(s"|V| = $n, |E| = $m"); g
+                case Array(v, w, weight) => g.addEdge(UndirectedWeightedEdge(v.toInt, w.toInt, weight.toInt))
+                case bad => throw new IllegalArgumentException(s"""Unexpected line: ${bad.deep.mkString(" ")}""")
+              }
+            }
 
           is.close()
-          g.build()
+          graph
         }
       ) match {
         case Failure(e) => fail("Failed to read input file", e)

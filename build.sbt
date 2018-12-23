@@ -10,7 +10,7 @@ inThisBuild(
       "-unchecked",
       "-feature",
       //  "-language:existentials",
-      //  "-language:higherKinds",
+      "-language:higherKinds",
       "-language:implicitConversions",
       //  "-language:postfixOps",
       "-deprecation",
@@ -34,12 +34,16 @@ Compile / wartremoverWarnings ++= Warts.unsafe
 
 lazy val `algorithms-design-analysis-2` = (project in file("."))
   .aggregate(
-    `test-util`, `homework-1`
+    `test-util`, `homework-1`, `homework-2`
   )
 
 lazy val `test-util` = project
 lazy val `data-structures` = project
+  .dependsOn(`test-util` % Test)
 
 lazy val `homework-1` = project
+  .dependsOn(`test-util` % Test, `data-structures`)
+
+lazy val `homework-2` = project
   .dependsOn(`test-util` % Test, `data-structures`)
 

@@ -1,7 +1,5 @@
 package org.asarkar.data
 
-import scala.collection.mutable.{HashMap => MutableMap, MultiMap => MutableMultiMap, Set => MutableSet}
-
 sealed trait Edge[T] {
   def tail: T
 
@@ -12,7 +10,7 @@ sealed trait WeightedEdge[T] extends Edge[T] {
   def weight: Double
 }
 
-sealed abstract class AbstractUndirectedEdge[T] extends Edge[T] {
+sealed protected[data] abstract class AbstractUndirectedEdge[T] extends Edge[T] {
   def other(v: T): Option[T] = if (v == tail) Some(head) else if (v == head) Some(tail) else None
 
   override def equals(obj: Any): Boolean = {
@@ -41,9 +39,14 @@ case class DirectedWeightedEdge[T](override val tail: T, override val head: T, o
   extends WeightedEdge[T]
 
 sealed trait Graph[V, E <: Edge[V]] {
-  def vertices: Iterable[V]
+  type G <: Graph[V, E]
 
-  def outgoing(v: V): Iterable[E]
+  def vertices: Iterable[V] = _vertices.keys ++
+    _vertices
+      .flatMap(_._2.map(_.head).toSet)
+
+  def outgoing(v: V): Iterable[E] = Option.option2Iterable(_vertices.get(v))
+    .flatten
 
   def edges: Iterable[E] = vertices
     .flatMap(outgoing)
@@ -58,64 +61,51 @@ sealed trait Graph[V, E <: Edge[V]] {
       .map(e => if (e.head == v) e.tail else e.head)
   }
 
-  def contains(v: V): Boolean
-}
+  def contains(v: V): Boolean = _vertices.contains(v)
 
-sealed abstract class MutableGraph[V, E <: Edge[V]] extends Graph[V, E] {
-  protected val _vertices = new MutableMap[V, MutableSet[E]] with MutableMultiMap[V, E]
+  def addEdge(e: E): G
 
-  def addEdge(e: E): Unit = {
-    _vertices.addBinding(e.tail, e)
+  protected[data] def _vertices: Map[V, Set[E]]
+
+  protected[data] def addEdge(e: E*): Map[V, Set[E]] = {
+    e.foldLeft(_vertices) { (map, x) =>
+      val heads = map.get(x.tail) match {
+        case Some(xs) => xs
+        case _ => Set.empty[E]
+      }
+      map + (x.tail -> (heads + x))
+    }
   }
-
-  override def vertices: Iterable[V] = _vertices.keys
-
-  override def outgoing(v: V): Iterable[E] = Option.option2Iterable(_vertices.get(v))
-    .flatten
-
-  override def contains(v: V): Boolean = _vertices.contains(v)
 }
 
-sealed private class UndirectedGraph[V, E <: AbstractUndirectedEdge[V]] private[data]() extends MutableGraph[V, E] {
-  override def addEdge(e: E): Unit = {
-    super.addEdge(e)
+sealed private[data] class UndirectedGraph[V, E <: AbstractUndirectedEdge[V]](
+                                                                               override protected[data] val _vertices: Map[V, Set[E]] =
+                                                                               Map.empty[V, Set[E]]
+                                                                             ) extends Graph[V, E] {
+  override type G = UndirectedGraph[V, E]
+
+  override def addEdge(e: E): G = {
     val reverse: AbstractUndirectedEdge[V] = e match {
-      case x if e.isInstanceOf[UndirectedWeightedEdge[V]] => x.asInstanceOf[UndirectedWeightedEdge[V]]
-        .copy(head = x.tail, tail = x.head)
+      case x: UndirectedWeightedEdge[V] => x.copy(head = x.tail, tail = x.head)
       case _ => UndirectedEdge(e.head, e.tail)
     }
-    super.addEdge(reverse.asInstanceOf[E])
+    new UndirectedGraph(super.addEdge(e, reverse.asInstanceOf[E]))
   }
 }
 
-sealed private class DirectedGraph[V, E <: DirectedEdge[V]] private[data]() extends MutableGraph[V, E] {
-  override def vertices: Iterable[V] = _vertices
-    .flatMap(_._2.map(_.head).toSet)
-}
+sealed private[data] class DirectedGraph[V, E <: DirectedEdge[V]](
+                                                                   override protected[data] val _vertices: Map[V, Set[E]] =
+                                                                   Map.empty[V, Set[E]]
+                                                                 ) extends Graph[V, E] {
+  override type G = DirectedGraph[V, E]
 
-sealed abstract class GraphBuilder[V, E <: Edge[V]] {
-  protected[data] val graph: MutableGraph[V, E]
-
-  def addEdge(e: E): this.type = {
-    graph.addEdge(e)
-    this
-  }
-
-  def build(): Graph[V, E] = graph
-}
-
-sealed class UndirectedGraphBuilder[V, E <: AbstractUndirectedEdge[V]] private[data]() extends GraphBuilder[V, E] {
-  override protected[data] val graph: MutableGraph[V, E] = new UndirectedGraph[V, E]()
-}
-
-sealed class DirectedGraphBuilder[V, E <: DirectedEdge[V]] private[data]() extends GraphBuilder[V, E] {
-  override protected[data] val graph: MutableGraph[V, E] = new DirectedGraph[V, E]
+  override def addEdge(e: E): G = new DirectedGraph(super.addEdge(Seq(e): _*))
 }
 
 object Graph {
-  def undirectedBuilder[V, E <: AbstractUndirectedEdge[V]]() = new UndirectedGraphBuilder[V, E]()
+  def undirected[V, E <: AbstractUndirectedEdge[V]] = new UndirectedGraph[V, E]()
 
-  def directedBuilder[V, E <: DirectedEdge[V]]() = new DirectedGraphBuilder[V, E]()
+  def directed[V, E <: DirectedEdge[V]] = new DirectedGraph[V, E]()
 }
 
 
