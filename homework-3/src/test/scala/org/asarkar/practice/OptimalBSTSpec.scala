@@ -15,10 +15,7 @@ class OptimalBSTSpec extends FlatSpec with TableDrivenPropertyChecks {
     // format: on
 
     forAll(data) { (items, cost) =>
-      val actual = OptimalBST.cost(items)
-      withClue(s"$actual is not equal to $cost") {
-        actual === cost +- 0.01d shouldBe true
-      }
+      OptimalBST.cost(items) shouldBe (cost +- 0.01d)
     }
   }
 }

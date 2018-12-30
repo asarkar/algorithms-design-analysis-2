@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/asarkar/algorithms-design-analysis-2.svg?branch=master)](https://travis-ci.org/asarkar/algorithms-design-analysis-2)
 
-Answers to homeworks for [Algorithms: Design and Analysis, Part 2](https://lagunita.stanford.edu/courses/course-v1:Engineering+Algorithms2+SelfPaced/about) - an online course offered by Stanford University and taught by Prof. Tim Roughgarden.
+Lecture videos and answers to homeworks for [Algorithms: Design and Analysis, Part 2](https://lagunita.stanford.edu/courses/course-v1:Engineering+Algorithms2+SelfPaced/about) - an online course offered by Stanford University and taught by Prof. Tim Roughgarden.
 
 ## Syllabus:
 
@@ -111,3 +111,28 @@ Answers to homeworks for [Algorithms: Design and Analysis, Part 2](https://lagun
 * [Optional Theory Problems](https://blog.asarkar.org/algorithms-design-analysis-2/hw-3-opt/)
 * [Programming Assignment](homework-3/src/main/scala/org/asarkar/homework/Assignment3.scala)
 
+### The Bellman-Ford Algorithm
+
+* [Single-Source Shortest Paths, Revisted](https://www.youtube.com/watch?v=oyHoqtxHiOs)
+* [Optimal Substructure](https://www.youtube.com/watch?v=06OK99Aak60)
+* [The Basic Algorithm I](https://www.youtube.com/watch?v=d1TWZa20Mkw)
+* [The Basic Algorithm II](https://www.youtube.com/watch?v=HaXTsC8eOfo)
+* [Detecting Negative Cycles](https://www.youtube.com/watch?v=Otn0kbliRUQ)
+* [A Space Optimization](https://www.youtube.com/watch?v=gkKtNcqm-hk)
+* [Internet Routing I (Optional)](https://www.youtube.com/watch?v=14QUonbUNNg)
+* [Internet Routing II (Optional)](https://www.youtube.com/watch?v=4KtFcJR9804)
+
+### All-Pairs Shortest Paths
+
+* [Problem Definition](https://www.youtube.com/watch?v=TENbWZPz3Ho)
+* [Optimal Substructure](https://www.youtube.com/watch?v=ogcvCr02gqM)
+* [The Floyd-Warshall Algorithm](https://www.youtube.com/watch?v=3cBHwPjDZxg)
+* [A Reweighting Technique](https://www.youtube.com/watch?v=DNRTlqPKK08)
+* [Johnson's Algorithm I](https://www.youtube.com/watch?v=YJgISqFj9l8)
+* [Johnson's Algorithm II](https://www.youtube.com/watch?v=47p0fWl166o)
+
+### Homework 4
+
+* [Problem Set](https://blog.asarkar.org/algorithms-design-analysis-2/set-4/)
+* [Optional Theory Problems](https://blog.asarkar.org/algorithms-design-analysis-2/hw-4-opt/)
+* [Programming Assignment](homework-4/src/main/scala/org/asarkar/homework/)

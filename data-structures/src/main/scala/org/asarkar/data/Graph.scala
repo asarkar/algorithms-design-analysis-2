@@ -15,7 +15,7 @@ sealed protected[data] abstract class AbstractUndirectedEdge[T] extends Edge[T] 
 
   override def equals(obj: Any): Boolean = {
     obj match {
-      case that: UndirectedEdge[T] => this.hashCode == that.hashCode
+      case that: AbstractUndirectedEdge[T] => this.hashCode == that.hashCode
       case _ => false
     }
   }
@@ -31,12 +31,16 @@ sealed protected[data] abstract class AbstractUndirectedEdge[T] extends Edge[T] 
 case class UndirectedEdge[T](override val tail: T, override val head: T) extends AbstractUndirectedEdge[T]
 
 case class UndirectedWeightedEdge[T](override val tail: T, override val head: T, override val weight: Double)
-  extends AbstractUndirectedEdge[T] with WeightedEdge[T]
+  extends AbstractUndirectedEdge[T] with WeightedEdge[T] {
+  override def hashCode(): Int = 31 * super.hashCode() + weight.hashCode()
+}
 
-case class DirectedEdge[T](override val tail: T, override val head: T) extends Edge[T]
+sealed protected[data] abstract class AbstractDirectedEdge[T] extends Edge[T]
+
+case class DirectedEdge[T](override val tail: T, override val head: T) extends AbstractDirectedEdge[T]
 
 case class DirectedWeightedEdge[T](override val tail: T, override val head: T, override val weight: Double)
-  extends WeightedEdge[T]
+  extends AbstractDirectedEdge[T] with WeightedEdge[T]
 
 sealed trait Graph[V, E <: Edge[V]] {
   type G <: Graph[V, E]
@@ -53,35 +57,32 @@ sealed trait Graph[V, E <: Edge[V]] {
     .toSet
 
   def hasEdge(v: V, w: V): Boolean = {
-    neighbors(v).exists(_ == w)
-  }
-
-  def neighbors(v: V): Iterable[V] = {
     outgoing(v)
       .map(e => if (e.head == v) e.tail else e.head)
+      .exists(_ == w)
   }
 
   def contains(v: V): Boolean = _vertices.contains(v)
 
   def addEdge(e: E): G
 
-  protected[data] def _vertices: Map[V, Set[E]]
+  protected def _vertices: Map[V, Set[E]]
 
-  protected[data] def addEdge(e: E*): Map[V, Set[E]] = {
-    e.foldLeft(_vertices) { (map, x) =>
-      val heads = map.get(x.tail) match {
+  protected def addEdges(map: Map[V, Set[E]], e: E*): Map[V, Set[E]] = {
+    e.foldLeft(map) { (m, x) =>
+      val heads = m.get(x.tail) match {
         case Some(xs) => xs
         case _ => Set.empty[E]
       }
-      map + (x.tail -> (heads + x))
+      m + (x.tail -> (heads + x))
     }
   }
 }
 
-sealed private[data] class UndirectedGraph[V, E <: AbstractUndirectedEdge[V]](
-                                                                               override protected[data] val _vertices: Map[V, Set[E]] =
-                                                                               Map.empty[V, Set[E]]
-                                                                             ) extends Graph[V, E] {
+sealed class UndirectedGraph[V, E <: AbstractUndirectedEdge[V]](
+                                                                 override protected[data] val _vertices: Map[V, Set[E]] =
+                                                                 Map.empty[V, Set[E]]
+                                                               ) extends Graph[V, E] {
   override type G = UndirectedGraph[V, E]
 
   override def addEdge(e: E): G = {
@@ -89,23 +90,44 @@ sealed private[data] class UndirectedGraph[V, E <: AbstractUndirectedEdge[V]](
       case x: UndirectedWeightedEdge[V] => x.copy(head = x.tail, tail = x.head)
       case _ => UndirectedEdge(e.head, e.tail)
     }
-    new UndirectedGraph(super.addEdge(e, reverse.asInstanceOf[E]))
+    new UndirectedGraph(super.addEdges(_vertices, e, reverse.asInstanceOf[E]))
   }
 }
 
-sealed private[data] class DirectedGraph[V, E <: DirectedEdge[V]](
-                                                                   override protected[data] val _vertices: Map[V, Set[E]] =
-                                                                   Map.empty[V, Set[E]]
-                                                                 ) extends Graph[V, E] {
+sealed class DirectedGraph[V, E <: AbstractDirectedEdge[V]](
+                                                             override protected[data] val _vertices: Map[V, Set[E]] =
+                                                             Map.empty[V, Set[E]],
+                                                             protected[data] val _reverseVertices: Map[V, Set[E]] =
+                                                             Map.empty[V, Set[E]]
+                                                           ) extends Graph[V, E] {
   override type G = DirectedGraph[V, E]
 
-  override def addEdge(e: E): G = new DirectedGraph(super.addEdge(Seq(e): _*))
+  override def addEdge(e: E): G = {
+    val m1 = super.addEdges(_vertices, Seq(e): _*)
+    val e1 = e match {
+      case x: DirectedWeightedEdge[V] => x.copy(tail = x.head, head = x.tail)
+      case _ => DirectedEdge(e.head, e.tail)
+    }
+    val m2 = super.addEdges(_reverseVertices, Seq(e1.asInstanceOf[E]): _*)
+    new DirectedGraph(m1, m2)
+  }
+
+  def incoming(v: V): Iterable[E] = Option.option2Iterable(_reverseVertices.get(v))
+    .flatten
+    .map { e =>
+      (e match {
+        case x: DirectedWeightedEdge[V] => x.copy(tail = x.head, head = x.tail)
+        case _ => DirectedEdge(e.head, e.tail)
+      }).asInstanceOf[E]
+    }
+
+  def hasVertex(v: V): Boolean = _vertices.contains(v) || _reverseVertices.contains(v)
 }
 
 object Graph {
-  def undirected[V, E <: AbstractUndirectedEdge[V]] = new UndirectedGraph[V, E]()
+  def undirected[V, E <: AbstractUndirectedEdge[V]]: UndirectedGraph[V, E] = new UndirectedGraph[V, E]()
 
-  def directed[V, E <: DirectedEdge[V]] = new DirectedGraph[V, E]()
+  def directed[V, E <: AbstractDirectedEdge[V]]: DirectedGraph[V, E] = new DirectedGraph[V, E]()
 }
 
 

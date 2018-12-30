@@ -36,12 +36,4 @@ class UndirectedGraphSpec extends FlatSpec {
 
     g.outgoing(1) should contain theSameElementsAs Vector(UndirectedEdge(1, 2), UndirectedEdge(1, 3))
   }
-
-  it should "return neighboring vertices" in {
-    val g = Graph.undirected[Int, UndirectedEdge[Int]]
-      .addEdge(UndirectedEdge(1, 2))
-      .addEdge(UndirectedEdge(1, 3))
-
-    g.neighbors(1) should contain allOf(2, 3)
-  }
 }

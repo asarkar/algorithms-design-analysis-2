@@ -35,11 +35,11 @@ class DirectedGraphSpec extends FlatSpec {
     g.outgoing(1) should contain theSameElementsAs Vector(DirectedEdge(1, 2), DirectedEdge(1, 3))
   }
 
-  it should "return neighboring vertices" in {
+  it should "return incoming edges" in {
     val g = Graph.directed[Int, DirectedEdge[Int]]
-      .addEdge(DirectedEdge(1, 2))
-      .addEdge(DirectedEdge(1, 3))
+      .addEdge(DirectedEdge(2, 1))
+      .addEdge(DirectedEdge(3, 1))
 
-    g.neighbors(1) should contain allOf(2, 3)
+    g.incoming(1) should contain theSameElementsAs Vector(DirectedEdge(2, 1), DirectedEdge(3, 1))
   }
 }
