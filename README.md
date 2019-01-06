@@ -136,3 +136,20 @@ Lecture videos and answers to homeworks for [Algorithms: Design and Analysis, Pa
 * [Problem Set](https://blog.asarkar.org/algorithms-design-analysis-2/set-4/)
 * [Optional Theory Problems](https://blog.asarkar.org/algorithms-design-analysis-2/hw-4-opt/)
 * [Programming Assignment](homework-4/src/main/scala/org/asarkar/homework/)
+
+### NP-Complete Problems
+
+* [Polynomial-Time Solvable Problems](https://www.youtube.com/watch?v=-WBgfIaPKDU)
+* [Reductions and Completeness](https://www.youtube.com/watch?v=laYqconr5jk)
+* [Definition and Interpretation of NP-Completeness I](https://www.youtube.com/watch?v=bcWthrdEQSM)
+* [Definition and Interpretation of NP-Completeness II](https://www.youtube.com/watch?v=V3zO9oIKukw)
+* [The P vs. NP Question](https://www.youtube.com/watch?v=TpmSCZ2cimk)
+* [Algorithmic Approaches to NP-Complete Problems](https://www.youtube.com/watch?v=eoA3-OJ0a1A)
+
+### Faster Exact Algorithms for NP-Complete Problems
+
+* [The Vertex Cover Problem](https://www.youtube.com/watch?v=lu8-Kcd--Xw)
+* [Smarter Search for Vertex Cover I](https://www.youtube.com/watch?v=fhsxapjFhJE)
+* [Smarter Search for Vertex Cover II](https://www.youtube.com/watch?v=9XpC-xcdTaE)
+* [The Traveling Salesman Problem](https://www.youtube.com/watch?v=oUMUW4FZgOk)
+* [A Dynamic Programming Algorithm for TSP](https://www.youtube.com/watch?v=vBo_zJi09CM)
