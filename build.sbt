@@ -34,7 +34,7 @@ Compile / wartremoverWarnings ++= Warts.unsafe
 
 lazy val `algorithms-design-analysis-2` = (project in file("."))
   .aggregate(
-    `test-util`, `homework-1`, `homework-2`, `homework-3`, `homework-4`, `homework-5`
+    `test-util`, `homework-1`, `homework-2`, `homework-3`, `homework-4`, `homework-5`, `homework-6`
   )
 
 lazy val `test-util` = project
@@ -60,3 +60,6 @@ lazy val `homework-4` = project
 lazy val `homework-5` = project
   .dependsOn(`test-util` % Test)
   .settings(Test / javaOptions ++= Seq("-Xms2g", "-Xmx2g"))
+
+lazy val `homework-6` = project
+  .dependsOn(`test-util` % Test, `data-structures`)

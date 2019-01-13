@@ -6,13 +6,12 @@ import java.nio.file.Paths
 import org.asarkar.test.ZipUtil
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers._
-import org.scalatest.prop.TableDrivenPropertyChecks
 
 import scala.io.Source
 import scala.util.{Failure, Success}
 
-class Assignment5Spec extends FlatSpec with TableDrivenPropertyChecks {
-  "tsp" should "compute the min cost tour from the given graphs" in {
+class Assignment5Spec extends FlatSpec {
+  "tsp" should "compute the min cost tour for the given graphs" in {
     val c1 = Map(
       1 -> Map(2 -> 4d, 3 -> 1d, 4 -> 3d),
       2 -> Map(3 -> 2d, 4 -> 1d),
@@ -35,7 +34,7 @@ class Assignment5Spec extends FlatSpec with TableDrivenPropertyChecks {
 
     ZipUtil.transformEntry(
       path,
-      _ == s"tsp.txt",
+      _ == "tsp.txt",
       is => {
         val it = Source.fromInputStream(is)
           .getLines
@@ -67,7 +66,7 @@ class Assignment5Spec extends FlatSpec with TableDrivenPropertyChecks {
       case Success(costs) =>
         val left = costs.filter(_._1 <= 12)
         val right = costs.filter(_._1 >= 11)
-        Assignment5.tsp(left, 0) + Assignment5.tsp(right, 11) - 2 * costs(11)(12) shouldBe (26442d +- 0.01d)
+        (Assignment5.tsp(left, 0) + Assignment5.tsp(right, 11) - 2 * costs(11)(12)).toInt shouldBe 26442
     }
   }
 }

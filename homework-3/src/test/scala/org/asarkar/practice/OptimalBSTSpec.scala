@@ -9,8 +9,9 @@ class OptimalBSTSpec extends FlatSpec with TableDrivenPropertyChecks {
     val data =
     // format: off
       Table(("items", "cost"),
-        (IndexedSeq[Double](4, 2, 6, 3), 26.0d),
-        (IndexedSeq(.05, .4, .08, .04, .1, .1, .23), 2.18d)
+        (IndexedSeq[Double](4, 2, 6, 3), 26d),
+        (IndexedSeq(.05, .4, .08, .04, .1, .1, .23), 2.18),
+        (IndexedSeq(.20, .05, .17, .10, .20, .03, .25), 2.23)
       )
     // format: on
 
