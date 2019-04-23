@@ -205,7 +205,7 @@ Lecture videos and answers to homeworks for [Algorithms: Design and Analysis, Pa
 
 * [Problem Set](https://blog.asarkar.org/algorithms-design-analysis-2/set-5/)
 * [Optional Theory Problems](https://blog.asarkar.org/algorithms-design-analysis-2/hw-5-opt/)
-* [Programming Assignment](homework-5/src/main/scala/org/asarkar/homework/)
+* [Programming Assignment](https://github.com/asarkar/algorithms-design-analysis-2/blob/master/homework-5/src/main/scala/org/asarkar/homework/Assignment5.scala)
 
 ### 17. Approximation Algorithms for NP-Complete Problems
   17.1 [A Greedy Knapsack Heuristic](https://www.youtube.com/watch?v=jx3SkD3mIK8)
