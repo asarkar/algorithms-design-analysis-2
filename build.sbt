@@ -5,7 +5,7 @@ inThisBuild(
   Seq(
     organization := "org.asarkar",
     version := "1.0.0",
-    scalaVersion := "2.12.7",
+    scalaVersion := "2.12.18",
     scalacOptions ++= Seq(
       "-unchecked",
       "-feature",
@@ -17,6 +17,7 @@ inThisBuild(
       "-encoding",
       "utf8"
     ),
+    javacOptions ++= Seq("-source", "11", "-target", "11"),
     libraryDependencies ++= allDeps
   )
     ++ inConfig(Test)(Seq(
