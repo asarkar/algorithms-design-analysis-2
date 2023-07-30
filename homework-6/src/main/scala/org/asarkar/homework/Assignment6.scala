@@ -44,7 +44,7 @@ import scala.collection.mutable
  * both present in the same SCC, then the 2-SAT instance is not satisfiable. As a further performance
  * boosting step, the test solves the given assignment instances parallelly.
  *
- * See https://blog.asarkar.org/algorithms-design-analysis/hw-4-opt/ for more details of the algorithm.
+ * See https://blogs.asarkar.com/algorithms-design-analysis/hw-4-opt/ for more details of the algorithm.
  */
 object Assignment6 {
   def twoSat(clauses: Seq[(Int, Int)]): Boolean = {

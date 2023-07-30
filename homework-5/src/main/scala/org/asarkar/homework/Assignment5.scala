@@ -32,7 +32,7 @@ import java.util.{HashMap => JavaHashMap}
  * to correct that.
  *
  * There exists a polynomial-time algorithm for the special case of Euclidean TSP. See the TSP section in
- * https://blog.asarkar.org/algorithms-curated.
+ * https://blogs.asarkar.com/algorithms-curated.
  *
  * The main speedup comes from splitting the graph into 'left' and 'right' parts such that they share a common edge.
  * Then  min_cost = min_cost_left + min_cost_right - 2 * common_edge_length. This follow intuitively from the diagrams
